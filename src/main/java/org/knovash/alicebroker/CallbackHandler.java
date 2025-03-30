@@ -30,6 +30,10 @@ public class CallbackHandler implements HttpHandler {
     private static final String TOKEN_URL = "https://oauth.yandex.ru/token";
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        log.info("CALLBACK START");
+        Context.contextCreate(exchange);
+
+
         Map<String, String> params = parseQuery(exchange.getRequestURI().getQuery());
         log.info("Callback params: {}", params); // Логирование параметров
 
@@ -46,34 +50,25 @@ public class CallbackHandler implements HttpHandler {
                 throw new SecurityException("Invalid state");
             }
             // 3. Обмен кода на токен
+            log.info("3. Обмен кода на токен");
             JSONObject tokens = exchangeCode(code, REDIRECT_URI);
+            log.info("JSONObject tokens: " + tokens);
+           String token =  tokens.getString("access_token");
 
-//            // 4. Ответ для Яндекса
-//            JSONObject response = new JSONObject()
-//                    .put("access_token", tokens.getString("access_token"))
-//                    .put("token_type", "bearer")
-//                    .put("expires_in", tokens.getInt("expires_in"));
-//            sendJsonResponse(exchange, 200, String.valueOf(response));
+//Чтобы авторизация завершалась корректно и приложение Яндекс переходило к поиску устройств,
+// вам необходимо вернуть HTML-страницу с JavaScript для закрытия окна авторизации.
+//             4. Отправка HTML для закрытия окна
+            log.info("4. Отправка HTML для закрытия окна");
+            // Используем рекомендованный Яндексом метод закрытия окна
+//            String htmlResponse = "<!DOCTYPE html><html>"
+//                    + "<head><script src='https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-token-with-polyfills-latest.js'></script></head>"
+//                    + "<body><script>"
+//                    + "window.onload = function() {"
+//                    + "  YaSendSuggestToken('https://alice-lms.zeabur.app', {access_token: '" + tokens.getString("access_token") + "'});"
+//                    + "};"
+//                    + "</script></body></html>";
 
-//Чтобы авторизация завершалась корректно и приложение Яндекс переходило к поиску устройств, вам необходимо вернуть HTML-страницу с JavaScript для закрытия окна авторизации.
-            // 4. Отправка HTML для закрытия окна
-//            String htmlResponse = "<html><script>"
-//                    + "window.opener.postMessage({type:'oauth', token:'" + tokens.getString("access_token") + "'}, '*');"
-//                    + "window.close();"
-//                    + "</script></html>";
-
-            // Формируем URL с параметрами в fragment
-            String redirectUrl = "/success#"
-                    + "access_token=" + URLEncoder.encode(tokens.getString("access_token"), StandardCharsets.UTF_8)
-                    + "&token_type=bearer"
-                    + "&expires_in=" + tokens.getInt("expires_in");
-
-            // Перенаправляем на страницу success с fragment
-            exchange.getResponseHeaders().add("Location", redirectUrl);
-            exchange.sendResponseHeaders(302, -1);
-
-
-//            sendHtmlResponse(exchange, 200, htmlResponse);
+            sendHtmlResponse(exchange,  token);
 
         } catch (Exception e) {
             JSONObject error = new JSONObject()
@@ -81,9 +76,11 @@ public class CallbackHandler implements HttpHandler {
                     .put("error_description", e.getMessage());
             sendJsonResponse(exchange, 400, String.valueOf(error));
         }
+        log.info("CALLBACK FINISH");
     }
 
     public static JSONObject exchangeCode(String code, String redirectUri) throws IOException {
+        log.info("START EXCHANGE CODE: " + code);
         String params = "grant_type=authorization_code" +
                 "&code=" + code +
                 "&client_id=" + CLIENT_ID +
@@ -131,12 +128,39 @@ public class CallbackHandler implements HttpHandler {
 
 
 //    Чтобы авторизация завершалась корректно и приложение Яндекс переходило к поиску устройств, вам необходимо вернуть HTML-страницу с JavaScript для закрытия окна авторизации.
-    private void sendHtmlResponse(HttpExchange exchange, int code, String html) throws IOException {
+//    private void sendHtmlResponse(HttpExchange exchange, int code, String html) throws IOException {
+//        exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+//        byte[] responseBytes = html.getBytes(StandardCharsets.UTF_8);
+//        exchange.sendResponseHeaders(code, responseBytes.length);
+//        try (OutputStream os = exchange.getResponseBody()) {
+//            os.write(responseBytes);
+//        }
+//    }
+
+    // CallbackHandler.java - Исправленная реализация закрытия окна
+    private void sendHtmlResponse(HttpExchange exchange, String accessToken) throws IOException {
+        String html = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "  <script src='https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-token-with-polyfills-latest.js'></script>"
+                + "</head>"
+                + "<body>"
+                + "  <script>"
+                + "    window.onload = function() {"
+                + "      YaSendSuggestToken('https://alice-lms.zeabur.app', {"
+                + "        access_token: '" + accessToken + "',"
+                + "        expires_in: 3600,"
+                + "        token_type: 'bearer'"
+                + "      });"
+                + "      setTimeout(function() { window.close(); }, 1000);" // Двойное закрытие
+                + "    };"
+                + "  </script>"
+                + "</body>"
+                + "</html>";
+
         exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
-        byte[] responseBytes = html.getBytes(StandardCharsets.UTF_8);
-        exchange.sendResponseHeaders(code, responseBytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(responseBytes);
-        }
+        byte[] response = html.getBytes(StandardCharsets.UTF_8);
+        exchange.sendResponseHeaders(200, response.length);
+        exchange.getResponseBody().write(response);
     }
 }

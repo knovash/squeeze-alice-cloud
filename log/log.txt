@@ -1,5 +1,2 @@
-[16:27:37 org.knovash.alicebroker.Main.main] - START
-[16:27:37 org.knovash.alicebroker.Config.readProperties] - READ CONFIG FROM config.properties
-[16:27:38 org.knovash.alicebroker.Hive.start] - MQTT STARTING...
-[16:27:45 org.knovash.alicebroker.Hive.start] - MQTT STARTED OK
-[16:27:45 org.knovash.alicebroker.Hive.handleMqttFromServiceMessage] - RECIEVED MESSAGE FROM TOPIC: INFO
+[22:20:49 org.knovash.alicebroker.Main.main] - START TRY
+[22:20:49 org.knovash.alicebroker.Config.readProperties] - READ CONFIG FROM config.properties
