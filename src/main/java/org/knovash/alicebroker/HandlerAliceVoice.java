@@ -6,7 +6,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lombok.extern.log4j.Log4j2;
 import org.knovash.alicebroker.utils.JsonUtilsNew;
-//import org.knovash.alicebroker.utils.JsonUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,13 +29,12 @@ public class HandlerAliceVoice implements HttpHandler {
         Map<String, Object> response = new HashMap<>();
         Object version = requestAliceVoice.version;
         Object session = requestAliceVoice.session;
-//        String responseJson = Hive.publishCommandWaitForAnswer(Hive.topicUdyPublish, context);
-////        log.info("RECIEVED MQTT: " + responseJson);
-//        String rrr = extractBodyResponse(responseJson);
-//        log.info("RESPONCE VOICE SET: " + rrr);
-////        String text = "привет";
-//        String text = rrr;
-        String text = Hive.publishContextCommandWaitForAnswer(Hive.topicUdyPublish, context);
+
+        String text ="привет";
+        try {
+            text = Hive.publishContextCommandWaitForAnswer(Hive.topicUdyPublish, context);
+        }
+        catch (Exception e){}
 
         response.put("text", text);
         response.put("end_session", true);
@@ -44,19 +42,9 @@ public class HandlerAliceVoice implements HttpHandler {
         ResponseAliceVoice responseAliceVoice = new ResponseAliceVoice(version, session, response);
         // Преобразование ответа в JSON
         String jsonResponse = mapper.writeValueAsString(responseAliceVoice);
-//        log.info("JSON OK");
         // Настройка заголовков ответа
         exchange.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
         exchange.sendResponseHeaders(200, jsonResponse.getBytes(StandardCharsets.UTF_8).length);
-//        log.info("HEADERS OK");
-
-//        byte[] responseBytes = context.bodyResponse.getBytes(StandardCharsets.UTF_8);
-//        exchange.getResponseHeaders().putAll(context.headers);
-//        exchange.sendResponseHeaders(context.code, responseBytes.length);
-//        try (OutputStream os = exchange.getResponseBody()) {
-//            os.write(responseBytes);
-//        }
-
         // Отправка ответа
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(jsonResponse.getBytes(StandardCharsets.UTF_8));
@@ -68,7 +56,6 @@ public class HandlerAliceVoice implements HttpHandler {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(rawJson);
-            // Получаем значение bodyResponse напрямую из корневого узла
             JsonNode bodyResponseNode = rootNode.get("bodyResponse");
             if (bodyResponseNode != null && bodyResponseNode.isTextual()) {
                 return bodyResponseNode.asText();

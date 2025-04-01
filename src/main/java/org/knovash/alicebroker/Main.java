@@ -12,7 +12,9 @@ public class Main {
     public static final String CLIENT_SECRET = "37cf34e9fdbd48d389e293fc96d5e794";
 
     public static void main(String[] args) {
-        log.info("START");
+        log.info("+----------------+");
+        log.info("|      START     |");
+        log.info("+----------------+");
         config.readProperties();
         Server.start();
         Hive.start();

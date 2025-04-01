@@ -30,7 +30,7 @@ public class Hive {
 //    public static String topicUdyPublishToken = Main.bearerToken + "to_lms_id"; // отправить сюда
 //    public static String topicUdyPublishHash = Main.bearerHash + "to_lms_id"; // отправить сюда
 //    public static String topicVoicePublish = "to_lms_voice_id"; // отправить сюда
-    public static String topicService = "INFO"; // отправить сюда
+//    public static String topicService = "INFO"; // отправить сюда
 
     public static void start() {
         log.info("MQTT STARTING...");
@@ -45,11 +45,11 @@ public class Hive {
             options.setPassword(HIVE_PASSWORD.toCharArray());
             mqttClient.connect(options);
             // Подписка на топик ответа
-            mqttClient.subscribe(topicService, (topic, message) -> handleMqttFromServiceMessage(topic, message));
+//            mqttClient.subscribe(topicService, (topic, message) -> handleMqttFromServiceMessage(topic, message));
             mqttClient.subscribe(topicRecieve, (topic, message) -> handleMqttMessageId(topic, message));
             mqttClient.subscribe("command_to_cloud", (topic, message) -> handleVoiceMqttRequestAndPublishAnswer(topic, message));
             log.info("MQTT STARTED OK");
-            publishToTopicText(topicService, "CONNECTED! V.1.5 OS: " + System.getProperty("os.name"));
+//            publishToTopicText(topicService, "CONNECTED! V.1.5 OS: " + System.getProperty("os.name"));
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -89,7 +89,6 @@ public class Hive {
 
     public static String publishContextWaitForContext(String topic, Context context) {
         log.info("MQTT PUBLISH TO TOPIC: " + topic);
-        log.info("MQTT USER EMAIL: <" + userYandexEmail + ">");
         String correlationId = UUID.randomUUID().toString();
         String responseBody = "";
         String contextJson = context.toJson();
@@ -103,7 +102,7 @@ public class Hive {
             try {
                 log.info("MQTT WAIT FOR RESPONSE...");
                 responseBody = future.get(15, TimeUnit.SECONDS);
-                log.info("MQTT CONTEXT RECIEVED: " + responseBody);
+                log.info("MQTT RESPONSE RECIEVED OK");
             } catch (TimeoutException e) {
                 log.info("MQTT ERROR NO RESPONSE: " + e);
                 responseBody = "---";
@@ -119,7 +118,7 @@ public class Hive {
     }
 
     private static void handleMqttMessageId(String topic, MqttMessage message) {
-        log.info("RECIEVED MESSAGE FROM TOPIC ID: " + topic);
+        log.info("RECIEVED MESSAGE FROM TOPIC : " + topic);
         log.info("MESSAGE : " + message);
         String payload = new String(message.getPayload());
         Map<String, String> params = parseParams(payload);
@@ -223,12 +222,6 @@ public class Hive {
                 result.put(key, value);
 //                log.info("RESULT ADD correlationId: " + result.entrySet());
             }
-//            if (key.equals("userid") ) {
-//                result.put(key, value);
-//                PageIndex.pageMessageId =value;
-//                log.info("RESULT ADD userid: " + result.entrySet());
-//            }
-
         }
         // Извлекаем context как всю оставшуюся часть строки
         String contextValue = message.substring(ctxStart + "context=".length());

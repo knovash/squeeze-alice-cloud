@@ -17,7 +17,7 @@ public abstract class HandlerAbstract implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         log.info("");
-        log.info("HANDLER ABSTARCT START >>>>>>>>>>>>>>>");
+        log.info("HANDLER START >>>");
         context = Context.contextCreate(httpExchange);
         String bearerToken = "";
         String jwtToken = null;
@@ -29,30 +29,29 @@ public abstract class HandlerAbstract implements HttpHandler {
                 log.info("BEARER TOKEN: " + UtilsToken.maskToken(bearerToken));
                 String token = bearerToken.replace("Bearer ", "");
                 try {
-                    jwtToken = YandexApiClient.getYandexUserInfoJwt(token);
-                    log.info("JWT TOKEN: " + jwtToken);
+                    jwtToken = YandexJwtUtils.getJwtByOauth(token);
                 } catch (Exception e) {
                     log.info("JWT ERROR");
 //                    throw new RuntimeException(e);
                 }
-                String email = YandexJwtParserSimple.parseYandexJwt(jwtToken, "email");
-                log.info("PUBLISH TO BEFORE: <" + Hive.topicUdyPublish + ">");
+                String email = YandexJwtUtils.parseYandexJwtForKey(jwtToken, "email");
                 Hive.topicUdyPublish = "to_lms_id" + email;
-                log.info("PUBLISH TO AFTER: <" + Hive.topicUdyPublish + ">");
+                log.info("SET PUBLISH TO TOPIC: <" + Hive.topicUdyPublish + ">");
 
             }
         }
-//        override
+
+//      override processContext
         context = processContext(context);
 
         log.info("SEND RESPONSE");
         sendResponse(httpExchange, context);
-        log.info("HANDLER ABSTARCT FINISH <<<<<<<<<<<<<<<");
+        log.info("HANDLER FINISH <<<");
         log.info("");
     }
 
     private void sendResponse(HttpExchange exchange, Context context) throws IOException {
-        log.info("CODE: " + context.code);
+//        log.info("CODE: " + context.code);
 //        log.info("BODY: " + context.bodyResponse);
         byte[] responseBytes = context.bodyResponse.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().putAll(context.headers);

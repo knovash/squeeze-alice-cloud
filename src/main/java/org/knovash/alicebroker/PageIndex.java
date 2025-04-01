@@ -2,34 +2,11 @@ package org.knovash.alicebroker;
 
 import lombok.extern.log4j.Log4j2;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 @Log4j2
 public class PageIndex {
 
     public static String page() {
         log.info("PAGE INDEX");
-
-        String clientId = "9aa97fffe29849bb945db5b82b3ee015";
-        String redirectUri = "http://alice-lms.zeabur.app/callback";
-        String authUrl = "https://oauth.yandex.ru/authorize" +
-                "?response_type=code" +
-                "&client_id=" + clientId +
-                "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
-                "&force_confirm=true" +
-
-                "&scope=yandex:passport:access" + // Добавьте необходимый scope
-//                "&scope=yandex:passport:access+yandex:cloud:access" // <-- Добавлен scope
-//                "&scope=yandex:passport:access+yandex:cloud:access"
-               "" ; // <-- Добавлен scope
-
-
-//        String authUrl = "https://oauth.yandex.ru/authorize"
-//                + "?response_type=code"
-//                + "&client_id=9aa97fffe29849bb945db5b82b3ee015"
-//                + "&redirect_uri=http://alice-lms.zeabur.app/callback"
-//                + "&force_confirm=true"; // <-- Этот параметр
 
         String page = "<!doctype html><html lang=\"ru\">\n" +
                 "<head>\n" +
@@ -39,11 +16,7 @@ public class PageIndex {
                 "<body> \n" +
 
                 "<p><strong>Привет! это навык Алисы для управления плеерами Logitech Media Server</strong></p> \n" +
-//                "<a href=\\html\\manual" + " target='_blank' rel='noopener noreferrer'" + ">" + "Инструкция" + "</a>" +
                 "<a href=\"/html/manual\" target=\"_blank\" rel=\"noopener noreferrer\">Инструкция</a>" +
-//                "<br>" +
-//                "<a href=\"" + authUrl + "\">Авторизация в Yandex</a>" +
-//                "<a href=https://oauth.yandex.ru/authorize?response_type=code&client_id=9aa97fffe29849bb945db5b82b3ee015&redirect_uri=http://alice-lms.zeabur.app/callback>Авторизация в Yandex</a>" +
                 "<br>" +
 
                 "<p><strong>Команды</strong></p> \n" +
