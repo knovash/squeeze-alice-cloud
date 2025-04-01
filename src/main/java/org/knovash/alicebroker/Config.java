@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 @AllArgsConstructor
 public class Config {
 
-    public Boolean inCloud;
+
     public int port;
     public String lmsIp;
     public String lmsPort;
@@ -26,7 +26,7 @@ public class Config {
     public void readProperties() {
         log.info("READ CONFIG FROM config.properties");
         ResourceBundle bundle = ResourceBundle.getBundle("config");
-        this.inCloud = Boolean.valueOf(bundle.getString("inCloud"));
+//        this.inCloud = Boolean.valueOf(bundle.getString("inCloud"));
         this.port = Integer.parseInt(bundle.getString("port"));
         this.lmsIp = bundle.getString("lmsIp");
         this.lmsPort = bundle.getString("lmsPort");
@@ -38,7 +38,7 @@ public class Config {
     @Override
     public String toString() {
         return "org.knovash.alicebroker.Config {" + "\n" +
-                " inCloud = " + inCloud + "\n" +
+//                " inCloud = " + inCloud + "\n" +
                 " port = " + port + "\n" +
                 " lmsIp = " + lmsIp + "\n" +
                 " lmsPort = " + lmsPort + "\n" +

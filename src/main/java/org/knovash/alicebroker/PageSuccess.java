@@ -18,7 +18,7 @@ public class PageSuccess {
                 "<body> \n" +
 
                 "<h1>Авторизация успешна!</h1>" +
-                Main.userId +
+//                Main.userId +
 
                 "</body>\n" +
                 "</html>";

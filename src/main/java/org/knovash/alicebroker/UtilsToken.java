@@ -27,7 +27,7 @@ public class UtilsToken {
         }
 
         // Рассчитываем длину маскируемой части
-        int keep = 10;
+        int keep = 6;
         String head = token.substring(0, keep);
         String tail = token.substring(length - keep);
         char[] stars = new char[length - 2 * keep];

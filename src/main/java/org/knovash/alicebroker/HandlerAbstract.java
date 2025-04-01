@@ -26,7 +26,7 @@ public abstract class HandlerAbstract implements HttpHandler {
             List<String> headerAuthorization = context.headers.getOrDefault("Authorization", null);
             if (headerAuthorization != null && headerAuthorization.size() != 0) {
                 bearerToken = headerAuthorization.get(0);
-                log.info("BEARER TOKEN: " + bearerToken);
+                log.info("BEARER TOKEN: " + UtilsToken.maskToken(bearerToken));
                 String token = bearerToken.replace("Bearer ", "");
                 try {
                     jwtToken = YandexApiClient.getYandexUserInfoJwt(token);
@@ -35,17 +35,13 @@ public abstract class HandlerAbstract implements HttpHandler {
                     log.info("JWT ERROR");
 //                    throw new RuntimeException(e);
                 }
-
-                try {
-                    YandexJwtParserSimple.parseYandexJwt(jwtToken);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                String email = YandexJwtParserSimple.parseYandexJwt(jwtToken, "email");
+                log.info("PUBLISH TO BEFORE: <" + Hive.topicUdyPublish + ">");
+                Hive.topicUdyPublish = "to_lms_id" + email;
+                log.info("PUBLISH TO AFTER: <" + Hive.topicUdyPublish + ">");
 
             }
-//
         }
-        log.info("GO");
 //        override
         context = processContext(context);
 

@@ -23,12 +23,13 @@ public class Hive {
     private static final String HIVE_USERNAME = "novashki";
     private static final String HIVE_PASSWORD = "Darthvader0";
     private static MqttClient mqttClient;
+    public static String userYandexEmail = "";
     private static final ResponseManager responseManager = new ResponseManager();
     public static String topicRecieve = "from_lms_id"; // подписаться
-    public static String topicUdyPublish = "to_lms_id"; // отправить сюда
-    public static String topicUdyPublishToken = Main.bearerToken + "to_lms_id"; // отправить сюда
-    public static String topicUdyPublishHash = Main.bearerHash + "to_lms_id"; // отправить сюда
-    public static String topicVoicePublish = "to_lms_voice_id"; // отправить сюда
+    public static String topicUdyPublish = "to_lms_id" + userYandexEmail; // отправить сюда
+//    public static String topicUdyPublishToken = Main.bearerToken + "to_lms_id"; // отправить сюда
+//    public static String topicUdyPublishHash = Main.bearerHash + "to_lms_id"; // отправить сюда
+//    public static String topicVoicePublish = "to_lms_voice_id"; // отправить сюда
     public static String topicService = "INFO"; // отправить сюда
 
     public static void start() {
@@ -88,6 +89,7 @@ public class Hive {
 
     public static String publishContextWaitForContext(String topic, Context context) {
         log.info("MQTT PUBLISH TO TOPIC: " + topic);
+        log.info("MQTT USER EMAIL: <" + userYandexEmail + ">");
         String correlationId = UUID.randomUUID().toString();
         String responseBody = "";
         String contextJson = context.toJson();
