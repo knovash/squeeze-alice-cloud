@@ -22,6 +22,7 @@ public class AuthHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) {
         log.info("AUTH HANDLER START >>>");
+//        https://codd-wd.ru/primery-avtorizaciya-poluchenie-access-token-oauth-2-0-yandeks-i-rabota-s-api-na-php/
         try {
             // 1. Генерация и сохранение state
             String state = generateState();
@@ -38,8 +39,6 @@ public class AuthHandler implements HttpHandler {
                     "response_type=code" +
                     "&client_id=" + CLIENT_ID +
                     "&redirect_uri=" + encodedRedirectUri +
-//                    "&scope=" + encodedScope +
-//                    "&scope=" + "home:lights" + // invalid scope
                     "&scope=" + "iot:control" +
                     "&state=" + encodedState +
                     "&force_confirm=true";

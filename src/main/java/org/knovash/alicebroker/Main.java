@@ -21,6 +21,8 @@ public class Main {
         log.info("START TRY");
         config.readProperties();
         Server.start();
+        log.info("1");
         Hive.start();
+        log.info("2");
     }
 }

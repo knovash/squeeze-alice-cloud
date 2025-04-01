@@ -22,14 +22,9 @@ public class Server {
         }
 
 //        иконка для браузера
-//        server.createContext("/favicon.ico", new HandlerFavicon());
+        server.createContext("/favicon.ico", new HandlerFavicon());
 
-//        авторизация в Яндекс
-//        server.createContext("/auth", new AuthHandler());
-//        server.createContext("/callback", new CallbackHandler());
 
-        server.createContext("/auth", new Handler());
-        server.createContext("/callback", new Handler());
 
 
 //        server.createContext("/success", new HandlerSuccess());
@@ -69,11 +64,19 @@ public class Server {
             }
         });
 
+        //        авторизация в Яндекс
+//        server.createContext("/auth", new AuthHandler());
+//        server.createContext("/callback", new CallbackHandler());
+
+        server.createContext("/auth", new HandlerWorkAuth());
+        server.createContext("/callback", new HandlerWorkCallback());
+        server.createContext("/callbackweb", new HandlerWorkCallbackWeb());
+
         server.createContext("/alice/", new HandlerAliceVoice());
         server.createContext("/yandex", new HandlerAliceUdy());
         server.createContext("/v1.0/", new HandlerAliceUdy());
         server.createContext("/html", new HandlerHtml());
-//        server.createContext("/", new HandlerWebAbstract());
+        server.createContext("/", new HandlerWebAbstract());
         server.createContext("/index", new HandlerWebAbstract());
 
         server.createContext("/static", exchange -> {

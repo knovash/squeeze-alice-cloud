@@ -20,29 +20,32 @@ public abstract class HandlerAbstract implements HttpHandler {
         log.info("HANDLER ABSTARCT START >>>>>>>>>>>>>>>");
         context = Context.contextCreate(httpExchange);
         String bearerToken = "";
+        String jwtToken = null;
 
         if (context.path.contains("v1.0")) {
             List<String> headerAuthorization = context.headers.getOrDefault("Authorization", null);
-//            log.info("headerAuthorization: " + headerAuthorization);
             if (headerAuthorization != null && headerAuthorization.size() != 0) {
                 bearerToken = headerAuthorization.get(0);
-                log.info("BEARER TOKEN: " + UtilsToken.maskToken(bearerToken));
-//                String bearerHash = String.valueOf(bearerToken.hashCode());
-//                log.info("BEARER HASH: " + bearerHash);
+                log.info("BEARER TOKEN: " + bearerToken);
+                String token = bearerToken.replace("Bearer ", "");
+                try {
+                    jwtToken = YandexApiClient.getYandexUserInfoJwt(token);
+                    log.info("JWT TOKEN: " + jwtToken);
+                } catch (Exception e) {
+                    log.info("JWT ERROR");
+//                    throw new RuntimeException(e);
+                }
+
+                try {
+                    YandexJwtParserSimple.parseYandexJwt(jwtToken);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
             }
-
-//            String token = bearerToken.replace("Bearer ", "");
-//            log.info("TOKEN: " + UtilsToken.maskToken(token));
-
-//            Users.User user = users.getUserByAccessToken(token);
-//            if(user != null) userId = user.id;
-
-
-//            String userId = YandexToken.getUserId(token);
-            log.info("USER ID: " + userId);
-
+//
         }
-
+        log.info("GO");
 //        override
         context = processContext(context);
 
@@ -54,7 +57,7 @@ public abstract class HandlerAbstract implements HttpHandler {
 
     private void sendResponse(HttpExchange exchange, Context context) throws IOException {
         log.info("CODE: " + context.code);
-        log.info("BODY: " + context.bodyResponse);
+//        log.info("BODY: " + context.bodyResponse);
         byte[] responseBytes = context.bodyResponse.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().putAll(context.headers);
         exchange.sendResponseHeaders(context.code, responseBytes.length);

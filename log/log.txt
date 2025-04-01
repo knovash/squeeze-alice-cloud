@@ -1,2 +1,1 @@
-[22:20:49 org.knovash.alicebroker.Main.main] - START TRY
-[22:20:49 org.knovash.alicebroker.Config.readProperties] - READ CONFIG FROM config.properties
+[16:11:42 org.knovash.alicebroker.MainTest.main] - START TRY
