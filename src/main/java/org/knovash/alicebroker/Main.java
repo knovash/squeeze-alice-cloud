@@ -16,7 +16,10 @@ public class Main {
         log.info("|      START     |");
         log.info("+----------------+");
         config.readProperties();
-        Server.start();
         Hive.start();
+        Server.start();
     }
 }
+
+// Подключение мгновенной авторизации https://yandex.ru/dev/id/doc/ru/suggest-connection
+// Настроить авторизационный сервер https://yandex.ru/dev/dialogs/smart-home/doc/ru/auth/create-server

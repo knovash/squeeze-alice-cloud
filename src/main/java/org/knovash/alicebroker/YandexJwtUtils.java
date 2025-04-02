@@ -14,6 +14,9 @@ import java.util.Map;
 @Log4j2
 public class YandexJwtUtils {
 
+//    Обмен токена на информацию о пользователе
+//    https://yandex.ru/dev/id/doc/ru/user-information
+
     public static String getJwtByOauth(String oauthToken) throws Exception {
         log.info("START GET JWT TOKEN BY OAUTH TOKEN");
         String url = "https://login.yandex.ru/info?format=jwt";
@@ -77,9 +80,9 @@ public class YandexJwtUtils {
 //            throw new RuntimeException(e);
         }
 
-//        for (Map.Entry<String, Object> entry : claims.entrySet()) {
-//            System.out.printf("%-15s: %s%n", entry.getKey(), entry.getValue());
-//        }
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            System.out.printf("%-15s: %s%n", entry.getKey(), entry.getValue());
+        }
 
         Map.Entry<String, Object> set = claims.entrySet().stream()
 //                .peek(c -> log.info(c))

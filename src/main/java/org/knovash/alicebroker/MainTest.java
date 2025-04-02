@@ -29,5 +29,13 @@ public class MainTest {
 //        gender = YandexJwtParserSimple.parseYandexJwt(jwtToken, "genjder");
 //        log.info("GENDER: " + gender);
 
+
+        //--------------------------------
+        //      для Ответить карточкой авторизации
+//        Object linking = new Object();
+//        ResponseAliceVoiceLinking responseAliceVoiceLinking = new ResponseAliceVoiceLinking(version, session, linking);
+//        String jsonResponse2 = mapper.writeValueAsString(responseAliceVoiceLinking);
+//---------------------------------
+
     }
 }

@@ -27,10 +27,7 @@ public class Hive {
     private static final ResponseManager responseManager = new ResponseManager();
     public static String topicRecieve = "from_lms_id"; // подписаться
     public static String topicUdyPublish = "to_lms_id" + userYandexEmail; // отправить сюда
-//    public static String topicUdyPublishToken = Main.bearerToken + "to_lms_id"; // отправить сюда
-//    public static String topicUdyPublishHash = Main.bearerHash + "to_lms_id"; // отправить сюда
-//    public static String topicVoicePublish = "to_lms_voice_id"; // отправить сюда
-//    public static String topicService = "INFO"; // отправить сюда
+
 
     public static void start() {
         log.info("MQTT STARTING...");
@@ -45,11 +42,9 @@ public class Hive {
             options.setPassword(HIVE_PASSWORD.toCharArray());
             mqttClient.connect(options);
             // Подписка на топик ответа
-//            mqttClient.subscribe(topicService, (topic, message) -> handleMqttFromServiceMessage(topic, message));
             mqttClient.subscribe(topicRecieve, (topic, message) -> handleMqttMessageId(topic, message));
             mqttClient.subscribe("command_to_cloud", (topic, message) -> handleVoiceMqttRequestAndPublishAnswer(topic, message));
             log.info("MQTT STARTED OK");
-//            publishToTopicText(topicService, "CONNECTED! V.1.5 OS: " + System.getProperty("os.name"));
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -63,6 +58,7 @@ public class Hive {
         }
     }
 
+//    ЭТО РАБОЧИЙ СЕЙЧАС МЕТОД ОТВЕТА НА ВОПРОС ЧТО ИГРАЕТ
     public static String publishContextCommandWaitForAnswer(String topic, Context context) {
         log.info("MQTT PUBLISH TO TOPIC: " + topic);
         String correlationId = UUID.randomUUID().toString();
@@ -76,12 +72,18 @@ public class Hive {
             // Ожидание ответа
             CompletableFuture<String> future = responseManager.waitForResponse(correlationId);
             try {
-                responseBody = future.get(15, TimeUnit.SECONDS);
+//                если таймаут больше 4 то навык ответит раньше что Навык не отвечает
+//                4 - недождалась ответа, но иногда может быть Навык неотвечает
+                responseBody = future.get(4, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
-                log.info("MQTT ERROR NO RESPONSE");
-                responseBody = "---";
+                log.info("MQTT ERROR NO RESPONSE answer = недождалась ответа");
+//                responseBody = "---";
+                return "недождалась ответа";
             }
         } catch (Exception e) {
+            log.info("MQTT ERROR NO RESPONSE 2");
+//                responseBody = "---";
+            return "недождалась ответа";
         }
         String answer = extractBodyResponse(responseBody);
         return answer;
@@ -112,11 +114,6 @@ public class Hive {
         return responseBody;
     }
 
-    private static void handleMqttFromServiceMessage(String topic, MqttMessage message) {
-        log.info("RECIEVED MESSAGE FROM TOPIC: " + topic);
-        log.debug("MESSAGE : " + message);
-    }
-
     private static void handleMqttMessageId(String topic, MqttMessage message) {
         log.info("RECIEVED MESSAGE FROM TOPIC : " + topic);
         log.info("MESSAGE : " + message);
@@ -130,7 +127,6 @@ public class Hive {
             responseManager.completeResponse(correlationId, contextJson);
         }
     }
-
 
     private static void handleVoiceMqttRequestAndPublishAnswer(String topicRecieved, MqttMessage request) {
         log.info("RECIEVED MESSAGE FROM TOPIC: " + topicRecieved);
@@ -150,43 +146,7 @@ public class Hive {
 //            log.debug("applicationId : " + applicationId);
 //            log.info("command : " + command);
 //            aliceId = applicationId;
-//          выполнить голосовую команду c ID колонки(комнаты) и получить ответ
-            String answer = "ff";
-//            String answer = SwitchVoiceCommand.switchVoice(applicationId, command);
-            log.info("ANSWER : " + answer);
 
-//         положить в пэйлоад сообщения ид и ответ
-            payload = "correlationId=" + correlationId + "&" +
-                    "context=" + answer;
-            try {
-                MqttMessage responseMessage = new MqttMessage(payload.getBytes());
-                mqttClient.publish(correlationId, responseMessage);
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private static void handleCommandAndPublishAnswer(String topicRecieved, MqttMessage request) {
-//        получить текстовую команду (запуск авторизации) и отправить текстовый ответ (User ID)
-        log.info("RECIEVED MESSAGE FROM TOPIC: " + topicRecieved);
-        log.debug("MESSAGE : " + request);
-        String payload = new String(request.getPayload());
-        Map<String, String> params = parseParams(payload);
-        String command = "";
-        String correlationId = "";
-        if (params.containsKey("correlationId")) {
-            correlationId = params.get("correlationId");
-            command = params.getOrDefault("command", "");
-
-//            Context context = Context.fromJson(contextJson);
-//            AliceRequest aliceRequest = AliceRequest.fromJson(context.body);
-//            String applicationId = aliceRequest.session.application.applicationId;
-//            String command = aliceRequest.request.command;
-//            log.debug("applicationId : " + applicationId);
-//            log.info("command : " + command);
-//            aliceId = applicationId;
 //          выполнить голосовую команду c ID колонки(комнаты) и получить ответ
             String answer = "ff";
 //            String answer = SwitchVoiceCommand.switchVoice(applicationId, command);
@@ -248,3 +208,42 @@ public class Hive {
         }
     }
 }
+
+
+
+
+//    private static void handleCommandAndPublishAnswer(String topicRecieved, MqttMessage request) {
+////        получить текстовую команду (запуск авторизации) и отправить текстовый ответ (User ID)
+//        log.info("RECIEVED MESSAGE FROM TOPIC: " + topicRecieved);
+//        log.debug("MESSAGE : " + request);
+//        String payload = new String(request.getPayload());
+//        Map<String, String> params = parseParams(payload);
+//        String command = "";
+//        String correlationId = "";
+//        if (params.containsKey("correlationId")) {
+//            correlationId = params.get("correlationId");
+//            command = params.getOrDefault("command", "");
+//
+////            Context context = Context.fromJson(contextJson);
+////            AliceRequest aliceRequest = AliceRequest.fromJson(context.body);
+////            String applicationId = aliceRequest.session.application.applicationId;
+////            String command = aliceRequest.request.command;
+////            log.debug("applicationId : " + applicationId);
+////            log.info("command : " + command);
+////            aliceId = applicationId;
+////          выполнить голосовую команду c ID колонки(комнаты) и получить ответ
+//            String answer = "ff";
+////            String answer = SwitchVoiceCommand.switchVoice(applicationId, command);
+//            log.info("ANSWER : " + answer);
+//
+////         положить в пэйлоад сообщения ид и ответ
+//            payload = "correlationId=" + correlationId + "&" +
+//                    "context=" + answer;
+//            try {
+//                MqttMessage responseMessage = new MqttMessage(payload.getBytes());
+//                mqttClient.publish(correlationId, responseMessage);
+//            } catch (MqttException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
