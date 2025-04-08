@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
-public class JsonUtilsNew {
+public class JsonUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -168,16 +168,16 @@ public class JsonUtilsNew {
     public static void valueToJsonFile(String valueName, String value) {
 //  только для записи ip в файл lms_ip.json
         ValuePojo valuePojo = new ValuePojo(value);
-        JsonUtilsNew.pojoToJsonFile(valuePojo, valueName + ".json");
+        JsonUtils.pojoToJsonFile(valuePojo, valueName + ".json");
     }
 
     public static String valueFromJsonFile(String fileName) {
 //  только для получения ip из файла lms_ip.json
         ValuePojo valuePojo = new ValuePojo();
-        valuePojo = JsonUtilsNew.jsonFileToPojo(fileName, ValuePojo.class);
+        valuePojo = JsonUtils.jsonFileToPojo(fileName, ValuePojo.class);
         if (valuePojo == null) return null;
-        String json = JsonUtilsNew.pojoToJson(valuePojo);
-        String value = JsonUtilsNew.jsonGetValue(json, "value");
+        String json = JsonUtils.pojoToJson(valuePojo);
+        String value = JsonUtils.jsonGetValue(json, "value");
         return value;
     }
 

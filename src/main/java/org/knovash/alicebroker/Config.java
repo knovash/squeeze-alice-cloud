@@ -1,19 +1,21 @@
 package org.knovash.alicebroker;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.knovash.alicebroker.utils.JsonUtils;
 
 import java.time.ZoneId;
 import java.util.ResourceBundle;
+
 
 @Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Config {
-
 
     public int port;
     public String lmsIp;
@@ -23,29 +25,69 @@ public class Config {
     public String domain;
     public ZoneId zoneId;
 
-    public void readProperties() {
-        log.info("READ CONFIG FROM config.properties");
+    public String hiveBroker;
+    public String hiveUsername;
+    public String hivePassword;
+    public String hiveYandexUid;
+
+    public void readConfigProperties() {
+        log.debug("READ CONFIG FROM config.properties");
         ResourceBundle bundle = ResourceBundle.getBundle("config");
-//        this.inCloud = Boolean.valueOf(bundle.getString("inCloud"));
         this.port = Integer.parseInt(bundle.getString("port"));
         this.lmsIp = bundle.getString("lmsIp");
         this.lmsPort = bundle.getString("lmsPort");
         this.silence = bundle.getString("silence");
         this.domain = bundle.getString("domain");
         this.lmsUrl = "http://" + lmsIp + ":" + lmsPort + "/jsonrpc.js/";
+
+        this.hiveBroker = bundle.getString("hiveBroker");
+        this.hiveUsername = bundle.getString("hiveUsername");
+        this.hivePassword = bundle.getString("hivePassword");
+//        this.hiveYandexEmail = bundle.getString("hiveYandexEmail");
+        log.info("CONFIG FROM config.properties : " + this);
+    }
+
+    public void readConfigJson() {
+        log.debug("READ CONFIG FROM config.json");
+        Config jsonConfig = JsonUtils.jsonFileToPojo("config.json", Config.class);
+        if(jsonConfig == null){
+            log.info("NO FILE config.json WRITE NEW");
+            this.writeConfig();
+            return;}
+
+        this.port = jsonConfig.port;
+        this.lmsIp = jsonConfig.lmsIp;
+        this.lmsPort = jsonConfig.lmsPort;
+        this.silence = jsonConfig.silence;
+        this.domain = jsonConfig.domain;
+        this.zoneId = jsonConfig.zoneId;
+        this.lmsUrl = "http://" + lmsIp + ":" + lmsPort + "/jsonrpc.js/";
+
+        this.hiveBroker = jsonConfig.hiveBroker;
+        this.hiveUsername = jsonConfig.hiveUsername;
+        this.hivePassword = jsonConfig.hivePassword;
+        this.hiveYandexUid = jsonConfig.hiveYandexUid;
+        log.info("CONFIG FROM config.json : " + this);
     }
 
     @Override
     public String toString() {
-        return "org.knovash.alicebroker.Config {" + "\n" +
-//                " inCloud = " + inCloud + "\n" +
+        return "Config {" + "\n" +
                 " port = " + port + "\n" +
-                " lmsIp = " + lmsIp + "\n" +
-                " lmsPort = " + lmsPort + "\n" +
-                " lmsUrl = " + lmsUrl + "\n" +
-                " silence = " + silence + "\n" +
+//                " lmsIp = " + lmsIp + "\n" +
+//                " lmsPort = " + lmsPort + "\n" +
+//                " lmsUrl = " + "http://" + this.lmsIp + ":" + this.lmsPort + "/jsonrpc.js/" + "\n" +
+//                " silence = " + silence + "\n" +
                 " domain = " + domain + "\n" +
-                " zoneId = " + zoneId + "\n" +
+                " hiveBroker = " + hiveBroker + "\n" +
+                " hiveUsername = " + hiveUsername + "\n" +
+                " hivePassword = " + hivePassword + "\n" +
+                " hiveYandexEmail = " + hiveYandexUid + "\n" +
                 '}';
+    }
+
+    public void writeConfig() {
+        log.info("WRITE CONFIG TO config.json");
+        JsonUtils.pojoToJsonFile(this, "config.json");
     }
 }

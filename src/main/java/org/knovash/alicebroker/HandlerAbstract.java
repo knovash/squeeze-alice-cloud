@@ -13,6 +13,7 @@ import static org.knovash.alicebroker.Main.*;
 
 @Log4j2
 public abstract class HandlerAbstract implements HttpHandler {
+    public static String uid;
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -27,6 +28,7 @@ public abstract class HandlerAbstract implements HttpHandler {
             if (headerAuthorization != null && headerAuthorization.size() != 0) {
                 bearerToken = headerAuthorization.get(0);
                 log.info("BEARER TOKEN: " + UtilsToken.maskToken(bearerToken));
+                log.info("BEARER TOKEN: " + bearerToken);
                 String token = bearerToken.replace("Bearer ", "");
                 try {
                     jwtToken = YandexJwtUtils.getJwtByOauth(token);
@@ -34,9 +36,9 @@ public abstract class HandlerAbstract implements HttpHandler {
                     log.info("JWT ERROR");
 //                    throw new RuntimeException(e);
                 }
-                String email = YandexJwtUtils.parseYandexJwtForKey(jwtToken, "email");
-                Hive.topicUdyPublish = "to_lms_id" + email;
-                log.info("SET PUBLISH TO TOPIC: <" + Hive.topicUdyPublish + ">");
+                 uid = YandexJwtUtils.parseYandexJwtForKey(jwtToken, "uid");
+//                Hive.topicUdyPublish = "to_lms_id" + uid;
+//                log.info("SET PUBLISH TO TOPIC: <" + Hive.topicUdyPublish + ">");
 
             }
         }

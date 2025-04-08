@@ -20,15 +20,20 @@ public class Server {
         }
 
         server.createContext("/favicon.ico", new HandlerFavicon());
-        server.createContext("/auth", new HandlerWorkAuth());
-        server.createContext("/callback", new HandlerWorkCallback());
-        server.createContext("/callbackweb", new HandlerWorkCallbackWeb());
         server.createContext("/alice/", new HandlerAliceVoice());
         server.createContext("/yandex", new HandlerAliceUdy());
         server.createContext("/v1.0/", new HandlerAliceUdy());
         server.createContext("/html", new HandlerHtml());
         server.createContext("/", new HandlerWebAbstract());
-//        server.createContext("/index", new HandlerWebAbstract());
+
+
+        server.createContext("/authorize_spotify", new CloudServerSpoty.AuthorizeHandler());
+        server.createContext("/spoti_callback", new CloudServerSpoty.CallbackHandler());
+//        server.createContext("/spoti_callback", new CloudServerSpoty.TokenHandler());
+
+        server.createContext("/authorize", new CloudServer.AuthorizeHandler());
+        server.createContext("/callback", new CloudServer.CallbackHandler());
+        server.createContext("/token", new CloudServer.TokenHandler());
 
         server.createContext("/static", exchange -> {
             String path = exchange.getRequestURI().getPath();
