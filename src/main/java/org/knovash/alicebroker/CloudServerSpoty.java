@@ -25,6 +25,7 @@ public class CloudServerSpoty {
     private static final String REDIRECT_URI = "https://alice-lms.zeabur.app/spoti_callback";
     private static final String SPOTIFY_TOKEN_URI = "https://accounts.spotify.com/api/token";
     private static final String SPOTIFY_AUTH_URI = "https://accounts.spotify.com/authorize";
+    public static long expiresAt;
 
 
     public static String scope = // spoty
@@ -96,10 +97,19 @@ public class CloudServerSpoty {
                 String accessToken = extractToken(tokenResponse);
                 log.info("CALBACK STORE accessToken: " + accessToken);
 
+                String refreshToken = extractRefreshToken(tokenResponse);
+                log.info("CALBACK STORE refreshToken: " + refreshToken);
+
+                Integer expiresIn = Integer.valueOf(extractExpiration(tokenResponse));
+                log.info("CALBACK STORE expiresIn: " + expiresIn + " sec");
+
+                expiresAt = System.currentTimeMillis() + expiresIn * 1000;
+                log.info("CALBACK STORE expiresAt: " + expiresAt);
+
 
                 log.info("PUBLISH CALLBACK TOKEN" + Hive.callbackTopic);
                 log.info("PUBLISH CALLBACK TOKEN" + Hive.state);
-                Hive.publishCallbackToken(accessToken, "spotify_callback_token");
+                Hive.publishCallbackToken(accessToken, refreshToken, String.valueOf(expiresAt), "spotify_callback_token");
 
 
                 tokenStore.put(state, accessToken);
@@ -190,6 +200,12 @@ public class CloudServerSpoty {
         return rootNode.path("refresh_token").asText();
     }
 
+    private static String extractExpiration(String jsonResponse) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(jsonResponse);
+        return rootNode.path("expires_in").asText();
+    }
+
     private static String getParam(String query, String paramName) {
         log.info("START GET PARAM: " + paramName + " QUERY: " + query);
         String[] pairs = query.split("&");
@@ -219,5 +235,34 @@ public class CloudServerSpoty {
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(message.getBytes());
         }
+    }
+
+    //Автоматическое обновление:
+//Используйте refresh_token (он есть в ответе) для продления:
+    public static String refreshTokenResponseBody(String refreshToken)  {
+        HttpClient client = HttpClient.newHttpClient();
+
+        String authHeader = "Basic " + Base64.getEncoder().encodeToString(
+                (CLIENT_ID + ":" + CLIENT_SECRET).getBytes());
+
+        String requestBody = "grant_type=refresh_token" +
+                "&refresh_token=" + refreshToken;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SPOTIFY_TOKEN_URI))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Authorization", authHeader)
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return response.body();
     }
 }

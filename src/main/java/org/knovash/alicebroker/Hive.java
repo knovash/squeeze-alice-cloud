@@ -111,7 +111,7 @@ public class Hive {
 
 //        Map<String, String> params = parseParams(payload);
         Map<String, String> params = Parser.run(payload);
-
+log.info("PARAMS: " + params);
         if (!params.containsKey("correlationId")) return;
         correlationId = params.getOrDefault("correlationId", "");
         callbackTopic = params.getOrDefault("callbackTopic", "");
@@ -120,21 +120,46 @@ public class Hive {
         log.info("correlationId: " + correlationId);
         log.info("callbackTopic: " + callbackTopic);
 
+        state = correlationId;
+        // отправка ответа в колбэк топик
+        log.info("MQTT PUBLISH TO TOPIC: " + callbackTopic);
+// String contextJson = context.toJson();
+
+// подготовка ответа, вернуть ключ и контекст с ответом
+        payload = "correlationId=" + correlationId + "&" +
+                "context=" + contextJson;
 
 //        ОБРАБОТАТЬ КОНТЕКСТ **************
+        log.info("ACTION: " + action);
         switch (action) {
             case ("token"):
                 log.info("ВЕРНУТЬ ТОКЕН В ТОПИК: " + callbackTopic);
-                state = correlationId;
+//                state = correlationId;
                 log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
                 return;
 //                break;
             case ("token_spotify"):
-                log.info("ВЕРНУТЬ ТОКЕН В ТОПИК: " + callbackTopic);
-                state = correlationId;
+                log.info("ВЕРНУТЬ СОПТИФАЙ ТОКЕН В ТОПИК: " + callbackTopic);
+//                state = correlationId;
                 log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
                 return;
 //                break;
+            case ("token_spotify_refresh"):
+                log.info("ВЕРНУТЬ РЕФРЕШ ТОКЕН В ТОПИК: " + callbackTopic);
+
+                String refreshToken = params.getOrDefault("text", "");
+                log.info("REFRESH TOKEN: " + refreshToken);
+                String refreshTokenResponse =  CloudServerSpoty.refreshTokenResponseBody(refreshToken);
+                log.info("REFRESH TOKEN NEW: " + refreshTokenResponse);
+
+                payload = "correlationId=" + correlationId + "&" +
+                        "action=" + "spotify_callback_refresh_token" + "&" +
+                        "refreshTokenResponse=" + refreshTokenResponse + "&" +
+                        "context=" + contextJson;
+
+                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
+//                return;
+                break;
             case ("/v1.0/user/unlink"):
                 break;
             default:
@@ -143,13 +168,6 @@ public class Hive {
         }
 
 
-// отправка ответа в колбэк топик
-        log.info("MQTT PUBLISH TO TOPIC: " + callbackTopic);
-// String contextJson = context.toJson();
-
-// подготовка ответа, вернуть ключ и контекст с ответом
-        payload = "correlationId=" + correlationId + "&" +
-                "context=" + contextJson;
 // Отправка ответа
         try {
             mqttClient.publish(callbackTopic, new MqttMessage(payload.getBytes()));
@@ -160,6 +178,10 @@ public class Hive {
     }
 
     public static void publishCallbackToken(String token, String action) {
+        publishCallbackToken(token, null, null, action);
+    }
+
+    public static void publishCallbackToken(String token, String refreshToken, String expiresAt, String action) {
         // отправка ответа в колбэк топик
         log.info("MQTT PUBLISH TO TOPIC: " + callbackTopic);
 // String contextJson = context.toJson();
@@ -167,6 +189,8 @@ public class Hive {
 // подготовка ответа, вернуть ключ и контекст с ответом
         String payload = "correlationId=" + state + "&" +
                 "token=" + token + "&" +
+                "expiresAt=" + expiresAt + "&" +
+                "refreshToken=" + refreshToken + "&" +
                 "action=" + action + "&" +
                 "context=" + "---";
         log.info("PAYLOAD: " + payload);

@@ -29,7 +29,6 @@ public class Server {
 
         server.createContext("/authorize_spotify", new CloudServerSpoty.AuthorizeHandler());
         server.createContext("/spoti_callback", new CloudServerSpoty.CallbackHandler());
-//        server.createContext("/spoti_callback", new CloudServerSpoty.TokenHandler());
 
         server.createContext("/authorize", new CloudServer.AuthorizeHandler());
         server.createContext("/callback", new CloudServer.CallbackHandler());

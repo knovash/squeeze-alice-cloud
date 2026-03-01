@@ -1,7 +1,7 @@
-[23:37:04 org.knovash.alicebroker.Main.main] - +----------------+
-[23:37:04 org.knovash.alicebroker.Main.main] - |      START     |
-[23:37:04 org.knovash.alicebroker.Main.main] - +----------------+
-[23:37:04 org.knovash.alicebroker.Config.readConfigProperties] - CONFIG FROM config.properties : Config {
+[20:21:33 org.knovash.alicebroker.Main.main] - +----------------+
+[20:21:33 org.knovash.alicebroker.Main.main] - |      START     |
+[20:21:33 org.knovash.alicebroker.Main.main] - +----------------+
+[20:21:33 org.knovash.alicebroker.Config.readConfigProperties] - CONFIG FROM config.properties : Config {
  port = 8080
  domain = https://alice-lms.zeabur.app
  hiveBroker = ssl://811c56b338f24aeea3215cd680851784.s1.eu.hivemq.cloud:8883
@@ -9,117 +9,18 @@
  hivePassword = Darthvader0
  hiveYandexEmail = null
 }
-[23:37:04 org.knovash.alicebroker.Hive.start] - MQTT STARTING...
-[23:37:05 org.knovash.alicebroker.Hive.start] - SUBSCRIBE: from_lms_id handleResponseManagerResievedMessageWithIdAndContext
-[23:37:05 org.knovash.alicebroker.Hive.start] - SUBSCRIBE: from_local_request handleRequestPublishResponse
-[23:37:05 org.knovash.alicebroker.Hive.start] - MQTT STARTED OK
-[23:37:05 org.knovash.alicebroker.Server.start] - SERVER STARTING...
-[23:37:05 org.knovash.alicebroker.Server.start] - SERVER STARTED OK
-[23:37:09 org.knovash.alicebroker.HandlerAbstract.handle] - 
-[23:37:09 org.knovash.alicebroker.HandlerAbstract.handle] - HANDLER START >>>
-[23:37:09 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/
-[23:37:09 org.knovash.alicebroker.Context.contextCreate] - PATH: /
-[23:37:09 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[document], Accept=[text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Sec-fetch-user=[?1], Connection=[keep-alive], Sec-fetch-site=[none], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[navigate], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Upgrade-insecure-requests=[1], Sec-ch-ua-mobile=[?0], Cache-control=[max-age=0]]
-[23:37:09 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:09 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:09 org.knovash.alicebroker.PageIndex.page] - PAGE INDEX
-[23:37:09 org.knovash.alicebroker.HandlerAbstract.handle] - SEND RESPONSE
-[23:37:09 org.knovash.alicebroker.HandlerAbstract.handle] - HANDLER FINISH <<<
-[23:37:09 org.knovash.alicebroker.HandlerAbstract.handle] - 
-[23:37:09 org.knovash.alicebroker.HandlerFavicon.handle] - HANDLER FAVICON START >>>
-[23:37:09 org.knovash.alicebroker.HandlerFavicon.handle] - HANDLER FAVICON FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Sec-fetch-dest=[document], Accept=[text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7], Sec-fetch-user=[?1], Connection=[keep-alive], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-fetch-mode=[navigate], Sec-ch-ua-platform=["Linux"], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Upgrade-insecure-requests=[1], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_a9e68898ec69cf03.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_a9e68898ec69cf03.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_a9e68898ec69cf03.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_fb489d1b55002f96.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_fb489d1b55002f96.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_fb489d1b55002f96.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_365a8194208852b7.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_365a8194208852b7.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_ab1461428766705b.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_ab1461428766705b.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_365a8194208852b7.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_b97e11b34bf64375.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_b97e11b34bf64375.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_ac9592e17e88b792.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_3852945214221813.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_ac9592e17e88b792.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_3852945214221813.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_ab1461428766705b.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_b97e11b34bf64375.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_ac9592e17e88b792.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_3852945214221813.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_871524d7e3fa5106.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_871524d7e3fa5106.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_871524d7e3fa5106.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_3267d1360873ebf9.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_3267d1360873ebf9.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_c766d35aba8e1b37.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_c766d35aba8e1b37.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML START >>>
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - REQUEST: GET http://localhost:8080/html/manual_html_d2ad6697278a02c6.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_3267d1360873ebf9.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - PATH: /html/manual_html_d2ad6697278a02c6.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - HEADERS: [Accept-encoding=[gzip, deflate, br, zstd], Sec-fetch-dest=[image], Accept=[image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8], Sec-ch-ua=["Not A(Brand";v="8", "Chromium";v="132", "Opera";v="117"], Connection=[keep-alive], Referer=[http://localhost:8080/html/manual], Sec-fetch-site=[same-origin], Host=[localhost:8080], Sec-ch-ua-platform=["Linux"], Sec-fetch-mode=[no-cors], User-agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 OPR/117.0.0.0], Accept-language=[ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7], Sec-ch-ua-mobile=[?0]]
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_d2ad6697278a02c6.png
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - BODY: 
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.Context.contextCreate] - QUERY: null
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - IMAGE:manual_html_c766d35aba8e1b37.png
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
-[23:37:17 org.knovash.alicebroker.HandlerHtml.handle] - HANDLER HTML FINISH <<<
+[20:21:33 org.knovash.alicebroker.Hive.start] - MQTT STARTING...
+[20:21:35 org.knovash.alicebroker.Hive.start] - SUBSCRIBE: from_lms_id handleResponseManagerResievedMessageWithIdAndContext
+[20:21:35 org.knovash.alicebroker.Hive.start] - SUBSCRIBE: from_local_request handleRequestPublishResponse
+[20:21:35 org.knovash.alicebroker.Hive.start] - MQTT STARTED OK
+[20:21:35 org.knovash.alicebroker.Server.start] - SERVER STARTING...
+[20:21:35 org.knovash.alicebroker.Server.start] - SERVER STARTED OK
+[20:25:11 org.knovash.alicebroker.Hive.handleResponseManagerResievedMessageWithIdAndContext] - RECIEVED MESSAGE FROM TOPIC : from_lms_id
+[20:25:11 org.knovash.alicebroker.Parser.run] - PARSER START
+[20:25:11 org.knovash.alicebroker.Parser.run] - {userTopicId=to_lms_id, context={"bodyResponse":"скажите навыку, это комната и название комнаты, например Веранда","code":200,"path":"/alice/","headers":{"Accept-encoding":["gzip, x-gzip, deflate, br"],"X-real-ip":["5.45.207.33"],"Accept":["application/json"],"X-forwarded-port":["443"],"X-zeabur-container-port":["8080"],"Host":["alice-lms.zeabur.app"],"User-agent":["Mozilla/5.0 (compatible; YandexDialogs/1.0;  http://yandex.com/bots)"],"Request-timeout":["4600000"],"X-zeabur-request-id":["fra1::fccc6d2c-4e16-4eda-829e-ce176f7ee504"],"Authorization":["Bearer y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA"],"X-forwarded-host":["alice-lms.zeabur.app"],"Content-type":["application/json"],"X-zeabur-ip-country":["RU"],"X-forwarded-for":["5.45.207.33, 5.45.207.33"],"X-forwarded-proto":["https"],"Content-length":["869"]},"body":"{\"meta\":{\"locale\":\"ru-RU\",\"timezone\":\"Europe/Minsk\",\"client_id\":\"aliced/1.0 (Yandex yandexmicro; Linux 1.0)\",\"interfaces\":{\"payments\":{},\"account_linking\":{}}},\"session\":{\"message_id\":0,\"session_id\":\"2d49dc99-dcbf-4f8d-b631-7890eb5b2fac\",\"skill_id\":\"ec0f2607-aa1d-4a7c-82ea-92dc7d9cf1e6\",\"user\":{\"user_id\":\"DA0E1FD517E40B2F06E1A2F09B1B3E36B38A8E48D0DAF7CF7A1839B855EA44ED\",\"access_token\":\"y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA\"},\"application\":{\"application_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"new\":true,\"user_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"request\":{\"command\":\"что играет\",\"original_utterance\":\"что играет\",\"nlu\":{\"tokens\":[\"что\",\"играет\"],\"entities\":[],\"intents\":{}},\"markup\":{\"dangerous_context\":false},\"type\":\"SimpleUtterance\"},\"version\":\"1.0\"}","xRequestId":null,"query":null,"queryMap":{},"xrequestId":null}, correlationId=1c9ad677-7bcc-4781-8a57-f375a2e22ba6}
+[20:25:22 org.knovash.alicebroker.Hive.handleResponseManagerResievedMessageWithIdAndContext] - RECIEVED MESSAGE FROM TOPIC : from_lms_id
+[20:25:22 org.knovash.alicebroker.Parser.run] - PARSER START
+[20:25:22 org.knovash.alicebroker.Parser.run] - {userTopicId=to_lms_id, context={"bodyResponse":"это комната Гостиная. с колонкой Homepod1","code":200,"path":"/alice/","headers":{"Accept-encoding":["gzip, x-gzip, deflate, br"],"X-real-ip":["5.45.207.35"],"Accept":["application/json"],"X-forwarded-port":["443"],"X-zeabur-container-port":["8080"],"Host":["alice-lms.zeabur.app"],"User-agent":["Mozilla/5.0 (compatible; YandexDialogs/1.0;  http://yandex.com/bots)"],"Request-timeout":["4600000"],"X-zeabur-request-id":["fra1::e862998b-cbfd-436b-a79c-efd149b1fcaa"],"Authorization":["Bearer y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA"],"X-forwarded-host":["alice-lms.zeabur.app"],"Content-type":["application/json"],"X-zeabur-ip-country":["RU"],"X-forwarded-for":["5.45.207.35, 5.45.207.35"],"X-forwarded-proto":["https"],"Content-length":["928"]},"body":"{\"meta\":{\"locale\":\"ru-RU\",\"timezone\":\"Europe/Minsk\",\"client_id\":\"aliced/1.0 (Yandex yandexmicro; Linux 1.0)\",\"interfaces\":{\"payments\":{},\"account_linking\":{}}},\"session\":{\"message_id\":0,\"session_id\":\"27ee8175-d821-40d7-9a75-90381b8fe01f\",\"skill_id\":\"ec0f2607-aa1d-4a7c-82ea-92dc7d9cf1e6\",\"user\":{\"user_id\":\"DA0E1FD517E40B2F06E1A2F09B1B3E36B38A8E48D0DAF7CF7A1839B855EA44ED\",\"access_token\":\"y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA\"},\"application\":{\"application_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"new\":true,\"user_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"request\":{\"command\":\"это комната гостиная\",\"original_utterance\":\"это комната гостиная\",\"nlu\":{\"tokens\":[\"это\",\"комната\",\"гостиная\"],\"entities\":[],\"intents\":{}},\"markup\":{\"dangerous_context\":false},\"type\":\"SimpleUtterance\"},\"version\":\"1.0\"}","xRequestId":null,"query":null,"queryMap":{},"xrequestId":null}, correlationId=987ec943-b8c1-43d0-9eef-dd08ee33ae4e}
+[20:25:32 org.knovash.alicebroker.Hive.handleResponseManagerResievedMessageWithIdAndContext] - RECIEVED MESSAGE FROM TOPIC : from_lms_id
+[20:25:32 org.knovash.alicebroker.Parser.run] - PARSER START
+[20:25:32 org.knovash.alicebroker.Parser.run] - {userTopicId=to_lms_id, context={"bodyResponse":"сейчас на Homepod1 играет Deep Organic House громкость 12","code":200,"path":"/alice/","headers":{"Accept-encoding":["gzip, x-gzip, deflate, br"],"X-real-ip":["5.45.207.39"],"Accept":["application/json"],"X-forwarded-port":["443"],"X-zeabur-container-port":["8080"],"Host":["alice-lms.zeabur.app"],"User-agent":["Mozilla/5.0 (compatible; YandexDialogs/1.0;  http://yandex.com/bots)"],"Request-timeout":["4600000"],"X-zeabur-request-id":["fra1::d31a8b30-3818-409b-ab89-866a0fa9d296"],"Authorization":["Bearer y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA"],"X-forwarded-host":["alice-lms.zeabur.app"],"Content-type":["application/json"],"X-zeabur-ip-country":["RU"],"X-forwarded-for":["5.45.207.39, 5.45.207.39"],"X-forwarded-proto":["https"],"Content-length":["869"]},"body":"{\"meta\":{\"locale\":\"ru-RU\",\"timezone\":\"Europe/Minsk\",\"client_id\":\"aliced/1.0 (Yandex yandexmicro; Linux 1.0)\",\"interfaces\":{\"payments\":{},\"account_linking\":{}}},\"session\":{\"message_id\":0,\"session_id\":\"2a73b27c-fdc0-47e1-95cb-112a7c40c8e4\",\"skill_id\":\"ec0f2607-aa1d-4a7c-82ea-92dc7d9cf1e6\",\"user\":{\"user_id\":\"DA0E1FD517E40B2F06E1A2F09B1B3E36B38A8E48D0DAF7CF7A1839B855EA44ED\",\"access_token\":\"y0__xDzxbXDARi79i4g1Kq52BLBrH5AiuK_6jAmQvamADVB964geA\"},\"application\":{\"application_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"new\":true,\"user_id\":\"B23238069B64E0F3BA26467C91147AFBD438C38EA7291F81A9876F4873A4E6E9\"},\"request\":{\"command\":\"что играет\",\"original_utterance\":\"что играет\",\"nlu\":{\"tokens\":[\"что\",\"играет\"],\"entities\":[],\"intents\":{}},\"markup\":{\"dangerous_context\":false},\"type\":\"SimpleUtterance\"},\"version\":\"1.0\"}","xRequestId":null,"query":null,"queryMap":{},"xrequestId":null}, correlationId=de2ea936-d85b-459d-ada2-750a1f024d81}

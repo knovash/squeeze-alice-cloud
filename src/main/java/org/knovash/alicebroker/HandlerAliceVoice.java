@@ -104,7 +104,8 @@ public class HandlerAliceVoice implements HttpHandler {
 
 
         response.put("text", text);
-        response.put("end_session", true);
+        if (text.contains("Я умею управлять плеерами")) response.put("end_session", false);
+        else response.put("end_session", true);
 //        log.info(" OK");
         ResponseAliceVoice responseAliceVoice = new ResponseAliceVoice(version, session, response);
 

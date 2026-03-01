@@ -16,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @Log4j2
 public class CloudServer {
 
@@ -30,7 +31,7 @@ public class CloudServer {
     static class AuthorizeHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange)  {
             log.info("");
             log.info("AUTHORIZE START >>>>>>");
             try {
@@ -50,7 +51,11 @@ public class CloudServer {
                 exchange.getResponseHeaders().add("Location", authUrl);
                 exchange.sendResponseHeaders(302, -1);
             } catch (Exception e) {
-                sendError(exchange, 400, "Invalid request");
+                try {
+                    sendError(exchange, 400, "Invalid request");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             log.info("AUTHORIZE FINISH >>>>>>");
