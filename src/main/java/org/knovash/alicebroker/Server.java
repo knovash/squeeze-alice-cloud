@@ -5,14 +5,13 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 @Log4j2
 public class Server {
 
     public static void start() {
-        System.out.println("SERVER STARTING...");
+        log.info("SERVER STARTING...");
         HttpServer server;
         try {
             server = HttpServer.create(new InetSocketAddress(Main.config.port), 0);
@@ -20,28 +19,20 @@ public class Server {
             throw new RuntimeException(e);
         }
 
-//        иконка для браузера
         server.createContext("/favicon.ico", new HandlerFavicon());
-
-//        авторизация в Яндекс
-        server.createContext("/auth", new AuthHandler());
-        server.createContext("/callback", new CallbackHandler());
-//        server.createContext("/success", new HandlerSuccess());
-
-        server.createContext("/success", exchange -> {
-            String html = "<html><body>Authorization complete! You can close this window.</body></html>";
-            exchange.getResponseHeaders().set("Content-Type", "text/html");
-            exchange.sendResponseHeaders(200, html.getBytes().length);
-            try (OutputStream os = exchange.getResponseBody()) {
-                os.write(html.getBytes());
-            }
-        });
-
         server.createContext("/alice/", new HandlerAliceVoice());
         server.createContext("/yandex", new HandlerAliceUdy());
         server.createContext("/v1.0/", new HandlerAliceUdy());
         server.createContext("/html", new HandlerHtml());
         server.createContext("/", new HandlerWebAbstract());
+
+
+        server.createContext("/authorize_spotify", new CloudServerSpoty.AuthorizeHandler());
+        server.createContext("/spoti_callback", new CloudServerSpoty.CallbackHandler());
+
+        server.createContext("/authorize", new CloudServer.AuthorizeHandler());
+        server.createContext("/callback", new CloudServer.CallbackHandler());
+        server.createContext("/token", new CloudServer.TokenHandler());
 
         server.createContext("/static", exchange -> {
             String path = exchange.getRequestURI().getPath();
@@ -58,6 +49,6 @@ public class Server {
 
         server.setExecutor(Executors.newCachedThreadPool());
         server.start();
-        System.out.println("SERVER STARTED OK");
+        log.info("SERVER STARTED OK");
     }
 }

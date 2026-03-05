@@ -71,7 +71,7 @@ public class Context {
         return "org.knovash.alicebroker.Context{" + "\n" +
                 " path = " + path + "\n" +
                 " headers = " + headers.entrySet() + "\n" +
-                " xRequestId = " + xRequestId + "\n" +
+//                " xRequestId = " + xRequestId + "\n" +
                 " query = " + query + "\n" +
                 " queryMap = " + queryMap + "\n" +
                 " body = " + body + "\n" +
@@ -109,6 +109,4 @@ public class Context {
             return null;
         }
     }
-
-
 }
