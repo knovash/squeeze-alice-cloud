@@ -108,9 +108,10 @@ public class CloudServerSpoty {
 
 
                 log.info("PUBLISH CALLBACK TOKEN" + Hive.callbackTopic);
-                log.info("PUBLISH CALLBACK TOKEN" + Hive.state);
-                Hive.publishCallbackToken(accessToken, refreshToken, String.valueOf(expiresAt), "spotify_callback_token");
+//                log.info("PUBLISH CALLBACK TOKEN" + Hive.state);
+//                Hive.publishCallbackToken(accessToken, refreshToken, String.valueOf(expiresAt), "spotify_callback_token");
 
+                Hive.publishCallbackToken(accessToken, refreshToken, String.valueOf(expiresAt), "spotify_callback_token", state);
 
                 tokenStore.put(state, accessToken);
 

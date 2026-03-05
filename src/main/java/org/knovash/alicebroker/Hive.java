@@ -1,16 +1,14 @@
 package org.knovash.alicebroker;
 
 import lombok.extern.log4j.Log4j2;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -18,7 +16,7 @@ import static org.knovash.alicebroker.HandlerAliceVoice.extractBodyResponse;
 import static org.knovash.alicebroker.Main.config;
 
 @Log4j2
-public class Hive {
+public class Hive implements MqttCallbackExtended {
 
     private static MqttClient mqttClient;
     private static final String hiveBroker = config.hiveBroker;
@@ -26,17 +24,23 @@ public class Hive {
     private static final String hivePassword = config.hivePassword;
     private static final ResponseManager responseManager = new ResponseManager();
 
-    //    public static String userYandexUid = "";
-    public static String topicRecieveResponse = "from_lms_id";// подписаться, ответы на мои запросы в local
-    public static String topicRecieveRequest = "from_local_request";// подписаться, запросы от local, вернуть ответ
-    public static String topicUdyPublish = "to_lms_id";// отправить сюда запросы в local
+    public static String topicRecieveResponse = "from_lms_id"; // подписка на ответы от local
+    public static String topicRecieveRequest = "from_local_request"; // подписка на запросы от local
+    public static String topicUdyPublish = "to_lms_id"; // отправка запросов в local
     public static String callbackTopic = "";
-    public static String state = "";
+//    public static String state = "";
+
+    // Хранилище активных подписок для восстановления после переподключения
+    private static final Set<String> activeSubscriptions = ConcurrentHashMap.newKeySet();
 
     public static void start() {
         log.info("MQTT STARTING...");
         try {
             mqttClient = new MqttClient(hiveBroker, MqttClient.generateClientId(), new MemoryPersistence());
+            // Устанавливаем callback на сам экземпляр Hive (класс реализует интерфейс)
+            Hive hiveInstance = new Hive();
+            mqttClient.setCallback(hiveInstance);
+
             MqttConnectOptions options = new MqttConnectOptions();
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
@@ -45,213 +49,224 @@ public class Hive {
             options.setPassword(hivePassword.toCharArray());
             mqttClient.connect(options);
 
-// Подписка на топик ответа
-            log.info("SUBSCRIBE: " + topicRecieveResponse + " " + "handleResponseManagerResievedMessageWithIdAndContext");
-            log.info("SUBSCRIBE: " + topicRecieveRequest + " " + "handleRequestPublishResponse");
-            mqttClient.subscribe(topicRecieveResponse, (topic, message) -> handleResponseManagerResievedMessageWithIdAndContext(topic, message));
-            mqttClient.subscribe(topicRecieveRequest, (topic, message) -> handleRequestPublishResponse(topic, message));
-// mqttClient.subscribe("command_to_cloud", (topic, message) -> handleVoiceMqttRequestAndPublishAnswer(topic, message));
+            // Первоначальные подписки (сохраняем в activeSubscriptions)
+            subscribe(topicRecieveResponse);
+            subscribe(topicRecieveRequest);
+
             log.info("MQTT STARTED OK");
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
 
+    // Метод подписки с сохранением топика
+    private static void subscribe(String topic) {
+        activeSubscriptions.add(topic);
+        if (mqttClient != null && mqttClient.isConnected()) {
+            try {
+                mqttClient.subscribe(topic);
+                log.info("SUBSCRIBED TO: {}", topic);
+            } catch (MqttException e) {
+                log.error("SUBSCRIBE ERROR: {}", e.getMessage());
+            }
+        } else {
+            log.warn("MQTT not connected, subscription will be restored later");
+        }
+    }
 
-    // ПРИНИМАЕТ ОТВЕТЫ ДЛЯ УДЯ И ГОЛОСОВЫХ КОМАНД
+    // Метод отписки с удалением из хранилища
+    public static void unsubscribe(String topic) {
+        activeSubscriptions.remove(topic);
+        if (mqttClient != null && mqttClient.isConnected()) {
+            try {
+                mqttClient.unsubscribe(topic);
+                log.info("UNSUBSCRIBED FROM: {}", topic);
+            } catch (MqttException e) {
+                log.error("UNSUBSCRIBE ERROR: {}", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void connectComplete(boolean reconnect, String serverURI) {
+        log.info("MQTT CONNECTION ESTABLISHED. Reconnect: {}", reconnect);
+        // Восстанавливаем все сохранённые подписки
+        if (!activeSubscriptions.isEmpty()) {
+            log.info("Restoring {} subscriptions...", activeSubscriptions.size());
+            for (String topic : activeSubscriptions) {
+                try {
+                    mqttClient.subscribe(topic);
+                    log.info("Subscription restored: {}", topic);
+                } catch (MqttException e) {
+                    log.error("Failed to restore subscription: {}", topic, e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void connectionLost(Throwable cause) {
+        log.warn("MQTT CONNECTION LOST: {}", cause.getMessage());
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) {
+        // Единый обработчик входящих сообщений
+        log.info("RECEIVED MESSAGE FROM TOPIC: {}", topic);
+        if (topic.equals(topicRecieveResponse)) {
+            handleResponseManagerResievedMessageWithIdAndContext(topic, message);
+        } else if (topic.equals(topicRecieveRequest)) {
+            handleRequestPublishResponse(topic, message);
+        } else if (topic.startsWith("callback")) {
+            // callback-топики тоже обрабатываем как ответы
+            handleResponseManagerResievedMessageWithIdAndContext(topic, message);
+        } else {
+            log.warn("Unknown topic: {}", topic);
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        // не используется
+    }
+
+    // --- Обработчики сообщений ---
+
     private static void handleResponseManagerResievedMessageWithIdAndContext(String topic, MqttMessage message) {
-        log.info("RECIEVED MESSAGE FROM TOPIC : " + topic);
         String payload = new String(message.getPayload());
+        log.info("PAYLOAD: {}", payload);
 
-//        Map<String, String> params = parseParams(payload);
         Map<String, String> params = Parser.run(payload);
-
         if (params.containsKey("correlationId")) {
-// если есть ID то получить ID и Context из сообщения
             String correlationId = params.get("correlationId");
             String contextJson = params.getOrDefault("context", "");
             responseManager.completeResponse(correlationId, contextJson);
         }
     }
 
-    private static Map<String, String> parseParams(String message) {
-        Map<String, String> result = new HashMap<>();
-        if (message == null || message.isEmpty()) return result;
-        int ctxStart = message.indexOf("context=");
-        if (ctxStart == -1) return result;
-        String prefix = message.substring(0, ctxStart);
-        String[] parts = prefix.split("&");
-        for (String part : parts) {
-            String[] kv = part.split("=", 2);
-            if (kv.length != 2) continue;
-            String key = URLDecoder.decode(kv[0], StandardCharsets.UTF_8);
-            String value = URLDecoder.decode(kv[1], StandardCharsets.UTF_8);
-            if (key.equals("correlationId")) {
-                result.put(key, value);
-            }
-        }
-        String contextValue = message.substring(ctxStart + "context=".length());
-        result.put("context", URLDecoder.decode(contextValue, StandardCharsets.UTF_8));
-        return result;
-    }
-
-
-    // *************************************
-// ПРИНИМАЕТ ЗАПРОСЫ ОТ local И ВОЗВРАЩАЕТ ОТВЕТ
     private static void handleRequestPublishResponse(String topic, MqttMessage message) {
-        log.info("RECIEVED MESSAGE FROM TOPIC : " + topic);
-        log.info("RECIEVED MESSAGE: " + message);
         String payload = new String(message.getPayload());
-        String correlationId = null;
-        String contextJson = null;
-//        String callbackTopic = null;
-        String action = null;
+        log.info("RECEIVED MESSAGE: {}", payload);
 
-// если в сообщении есть ключ то получить из сообщения: ключ, колбэктопик, контекст
-
-//        Map<String, String> params = parseParams(payload);
         Map<String, String> params = Parser.run(payload);
-log.info("PARAMS: " + params);
+        log.info("PARAMS: {}", params);
+
         if (!params.containsKey("correlationId")) return;
-        correlationId = params.getOrDefault("correlationId", "");
+        String correlationId = params.getOrDefault("correlationId", "");
         callbackTopic = params.getOrDefault("callbackTopic", "");
-        action = params.getOrDefault("action", "");
-        contextJson = params.getOrDefault("context", "");
-        log.info("correlationId: " + correlationId);
-        log.info("callbackTopic: " + callbackTopic);
+        String action = params.getOrDefault("action", "");
+        String contextJson = params.getOrDefault("context", "");
 
-        state = correlationId;
-        // отправка ответа в колбэк топик
-        log.info("MQTT PUBLISH TO TOPIC: " + callbackTopic);
-// String contextJson = context.toJson();
+        log.info("correlationId: {}", correlationId);
+        log.info("callbackTopic: {}", callbackTopic);
 
-// подготовка ответа, вернуть ключ и контекст с ответом
-        payload = "correlationId=" + correlationId + "&" +
+//        state = correlationId; // возможно используется где-то ещё
+
+        // Подготовка ответа по умолчанию (возвращаем тот же контекст)
+        String responsePayload = "correlationId=" + correlationId + "&" +
                 "context=" + contextJson;
 
-//        ОБРАБОТАТЬ КОНТЕКСТ **************
-        log.info("ACTION: " + action);
+        log.info("ACTION: {}", action);
         switch (action) {
-            case ("token"):
+            case "token":
                 log.info("ВЕРНУТЬ ТОКЕН В ТОПИК: " + callbackTopic);
-//                state = correlationId;
-                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
+//                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
+                return; // ничего не публикуем, ответ будет позже через publishCallbackToken
+            case "token_spotify":
+                log.info("ВЕРНУТЬ СПОТИФАЙ ТОКЕН В ТОПИК: " + callbackTopic);
+//                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
                 return;
-//                break;
-            case ("token_spotify"):
-                log.info("ВЕРНУТЬ СОПТИФАЙ ТОКЕН В ТОПИК: " + callbackTopic);
-//                state = correlationId;
-                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
-                return;
-//                break;
-            case ("token_spotify_refresh"):
+            case "token_spotify_refresh":
                 log.info("ВЕРНУТЬ РЕФРЕШ ТОКЕН В ТОПИК: " + callbackTopic);
-
                 String refreshToken = params.getOrDefault("text", "");
                 log.info("REFRESH TOKEN: " + refreshToken);
-                String refreshTokenResponse =  CloudServerSpoty.refreshTokenResponseBody(refreshToken);
+                String refreshTokenResponse = CloudServerSpoty.refreshTokenResponseBody(refreshToken);
                 log.info("REFRESH TOKEN NEW: " + refreshTokenResponse);
-
-                payload = "correlationId=" + correlationId + "&" +
+                responsePayload = "correlationId=" + correlationId + "&" +
                         "action=" + "spotify_callback_refresh_token" + "&" +
                         "refreshTokenResponse=" + refreshTokenResponse + "&" +
                         "context=" + contextJson;
-
-                log.info("ВЕРНУТЬ ТОКЕН ДЛЯ STATE: " + state);
-//                return;
                 break;
-            case ("/v1.0/user/unlink"):
+            case "/v1.0/user/unlink":
                 break;
             default:
                 log.info("PATH ERROR " + action);
                 break;
         }
 
-
-// Отправка ответа
+        // Публикация ответа
         try {
-            mqttClient.publish(callbackTopic, new MqttMessage(payload.getBytes()));
+            mqttClient.publish(callbackTopic, new MqttMessage(responsePayload.getBytes()));
+            log.info("PUBLISHED TO {}: {}", callbackTopic, responsePayload);
         } catch (MqttException e) {
-            log.info("MQTT PUBLISH ERROR: " + e);
-// throw new RuntimeException(e);
+            log.error("MQTT PUBLISH ERROR", e);
         }
     }
 
-    public static void publishCallbackToken(String token, String action) {
-        publishCallbackToken(token, null, null, action);
-    }
-
-    public static void publishCallbackToken(String token, String refreshToken, String expiresAt, String action) {
-        // отправка ответа в колбэк топик
-        log.info("MQTT PUBLISH TO TOPIC: " + callbackTopic);
-// String contextJson = context.toJson();
-
-// подготовка ответа, вернуть ключ и контекст с ответом
-        String payload = "correlationId=" + state + "&" +
+    // --- Публикация токенов (вызывается из CloudServer) ---
+    public static void publishCallbackToken(String token, String refreshToken, String expiresAt, String action, String correlationId) {
+        String topic = "callback" + correlationId;
+        String payload = "correlationId=" + correlationId + "&" +
                 "token=" + token + "&" +
                 "expiresAt=" + expiresAt + "&" +
                 "refreshToken=" + refreshToken + "&" +
                 "action=" + action + "&" +
-                "context=" + "---";
-        log.info("PAYLOAD: " + payload);
-// Отправка ответа
+                "context=---";
         try {
-            log.info("TRY PUBLISH...");
-            mqttClient.publish(callbackTopic, new MqttMessage(payload.getBytes()));
+            log.info("PUBLISH TO TOPIC: {}", topic);
+            mqttClient.publish(topic, new MqttMessage(payload.getBytes()));
         } catch (MqttException e) {
-            log.info("MQTT PUBLISH ERROR: " + e);
-// throw new RuntimeException(e);
+            log.error("MQTT PUBLISH ERROR", e);
         }
     }
 
+    public static void publishCallbackToken(String token, String action, String correlationId) {
+        String topic = "callback" + correlationId;
+        String payload = "correlationId=" + correlationId + "&" +
+                "token=" + token + "&" +
+                "action=" + action + "&" +
+                "context=---";
+        try {
+            log.info("PUBLISH TO TOPIC: {}", topic);
+            mqttClient.publish(topic, new MqttMessage(payload.getBytes()));
+        } catch (MqttException e) {
+            log.error("MQTT PUBLISH ERROR", e);
+        }
+    }
 
-// ***************************************************
-
-
-// ------------------------PUBLISH
-
+    // --- Публикация команд и ожидание ответа (для голосовых запросов) ---
     public static String publishContextCommandWaitForAnswer(String topic, Context context) {
         log.info("SIMPLE METHOD FOR VOICE ANSWER");
         String responseBody = publishContextWaitForContext(topic, context);
-        String answer = extractBodyResponse(responseBody);
-        return answer;
+        return extractBodyResponse(responseBody);
     }
 
-    // ЭТО РАБОЧИЙ СЕЙЧАС МЕТОД ДЛЯ УДЯ КОМАНД
     public static String publishContextWaitForContext(String topic, Context context) {
         log.info("MQTT PUBLISH TO TOPIC: " + topic);
         String correlationId = UUID.randomUUID().toString();
-        String responseBody = "";
         String contextJson = context.toJson();
+        String payload = "correlationId=" + correlationId + "&" +
+                "context=" + contextJson;
         try {
-// Отправка запроса в MQTT
-//            String payload = String.format("correlationId=%s&context=%s", correlationId, contextJson);
-            String payload = "correlationId=" + correlationId + "&" +
-//                    "userTopicId=" + topicRecieveDevice + "&" +
-                    "context=" + contextJson;
             mqttClient.publish(topic, new MqttMessage(payload.getBytes()));
-// Ожидание ответа
+
             CompletableFuture<String> future = responseManager.waitForResponse(correlationId);
-// Получение ответа
-            try {
-                log.info("MQTT WAIT FOR RESPONSE...");
-// если таймаут больше 4 то навык ответит раньше что Навык не отвечает
-// 4 - недождалась ответа, но иногда может быть Навык неотвечает
-// для УДЯ было 10
-                responseBody = future.get(4, TimeUnit.SECONDS);
-                log.info("MQTT RESPONSE RECIEVED OK");
-            } catch (TimeoutException e) {
-                log.info("MQTT ERROR NO RESPONSE: " + e);
-                responseBody = "---";
-            }
+            log.info("MQTT WAIT FOR RESPONSE...");
+            // Увеличиваем таймаут до 10 секунд (было 4)
+            String responseBody = future.get(10, TimeUnit.SECONDS);
+            log.info("MQTT RESPONSE RECEIVED OK");
+            return responseBody;
+        } catch (TimeoutException e) {
+            log.warn("MQTT RESPONSE TIMEOUT after 10s: {}", e.getMessage());
+            return "---";
         } catch (Exception e) {
+            log.error("MQTT RESPONSE ERROR", e);
+            return "---";
         }
-        return responseBody;
     }
 
-
+    // --- Внутренний класс ResponseManager (без изменений) ---
     private static class ResponseManager {
-
         private final ConcurrentMap<String, CompletableFuture<String>> responses = new ConcurrentHashMap<>();
 
         public CompletableFuture<String> waitForResponse(String correlationId) {
@@ -264,16 +279,9 @@ log.info("PARAMS: " + params);
             CompletableFuture<String> future = responses.remove(correlationId);
             if (future != null) {
                 future.complete(contextJson);
+            } else {
+                log.warn("No future found for correlationId: {}", correlationId);
             }
-        }
-    }
-
-    public static void unsubscribe(String topic) {
-        log.info("HIVE UNSUBSCRIBE TOPIC: " + topic);
-        try {
-            mqttClient.unsubscribe(topic);
-        } catch (MqttException e) {
-            log.info("MQTT UNSUBSCRIBE ERROR: " + e);
         }
     }
 

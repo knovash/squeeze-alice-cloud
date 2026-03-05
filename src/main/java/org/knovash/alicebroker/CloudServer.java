@@ -87,8 +87,8 @@ public class CloudServer {
 
 
                 log.info("PUBLISH CALLBACK TOKEN" + Hive.callbackTopic);
-                log.info("PUBLISH CALLBACK TOKEN" + Hive.state);
-                Hive.publishCallbackToken(accessToken, "yandex_callback_token");
+//                log.info("PUBLISH CALLBACK TOKEN" + Hive.state);
+                Hive.publishCallbackToken(accessToken, "yandex_callback_token", state);
 
 
                 tokenStore.put(state, accessToken);

@@ -16,6 +16,7 @@ public class PageIndex {
                 "<body> \n" +
 
                 "<p><strong>Привет! это навык Умного дома с Алисой для управления плеерами Lyrion Media Server</strong></p> \n" +
+                "<p><strong>v 1.1</strong></p> \n" +
                 "<a href=\"/html/manual\" target=\"_blank\" rel=\"noopener noreferrer\">Инструкция</a>" +
                 "<br>" +
 

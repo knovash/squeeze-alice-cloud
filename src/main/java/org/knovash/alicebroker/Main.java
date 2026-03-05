@@ -9,9 +9,9 @@ public class Main {
     public static Context context = new Context();
 
     public static void main(String[] args) {
-        log.info("+----------------+");
-        log.info("|      START     |");
-        log.info("+----------------+");
+        log.info("+------------------------------+");
+        log.info("|   version 2025.03.05 17:20   |");
+        log.info("+------------------------------+");
         config.readConfigProperties();
         Hive.start();
         Server.start();
