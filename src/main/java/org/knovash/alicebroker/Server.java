@@ -32,6 +32,9 @@ public class Server {
 
         server.createContext("/authorize", new CloudServer.AuthorizeHandler());
         server.createContext("/callback", new CloudServer.CallbackHandler());
+
+        server.createContext("/info", new HandlerInfo());
+
         server.createContext("/token", new CloudServer.TokenHandler());
 
         server.createContext("/static", exchange -> {
