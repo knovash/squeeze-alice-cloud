@@ -20,11 +20,8 @@ public class HandlerSpotify implements HttpHandler {
         Context context = Context.contextCreate(httpExchange);
 
 
-
-
         // Формируем ответ
         String json = " {\"access_token\":\"" + "token" + "\",\"token_type\":\"bearer\",\"expires_in\":4294967296}";
-
 
         json = PageSpotify.page();
 
@@ -34,7 +31,6 @@ public class HandlerSpotify implements HttpHandler {
         httpExchange.sendResponseHeaders(200, responseBytes.length);
         OutputStream os = httpExchange.getResponseBody();
         os.write(responseBytes);
-
 
         log.info("HANDLER CALLBACK FINISH <<<");
     }
